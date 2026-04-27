@@ -15,15 +15,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
-from core.views import home   
-from core.views import home, JobListAPI, JobCreateAPI, UserTestAPI
-
+from core.views import SignupAPI, LoginAPI, JobCreateAPI, JobListAPI, ApplyJobAPI, UserTestAPI
+from rest_framework_simplejwt.views import TokenRefreshView
+from core.views import CandidateProfileAPI, EmployerProfileAPI
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home),
+
+    path('api/signup/', SignupAPI.as_view()),
+    path('api/login/', LoginAPI.as_view()),
+    path('api/token/refresh/', TokenRefreshView.as_view()),
+
     path('api/jobs/', JobListAPI.as_view()),
     path('api/jobs/create/', JobCreateAPI.as_view()),
+    path('api/apply/', ApplyJobAPI.as_view()),
     path('api/users/', UserTestAPI.as_view()),
-]
+    path('api/candidate/profile/', CandidateProfileAPI.as_view()),
+    path('api/employer/profile/', EmployerProfileAPI.as_view()),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
