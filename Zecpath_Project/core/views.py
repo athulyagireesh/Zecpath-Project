@@ -140,3 +140,6 @@ class EmployerProfileAPI(APIView):
         employer.is_active = False
         employer.save()
         return Response({"message": "Profile soft deleted"})
+    
+
+    
