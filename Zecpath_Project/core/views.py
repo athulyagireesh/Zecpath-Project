@@ -27,7 +27,31 @@ class LoginAPI(TokenObtainPairView):
     pass
 
 
-# ✅ Employer → Create Job
+
+# class JobCreateAPI(APIView):
+#     permission_classes = [IsAuthenticated, IsEmployer]
+
+#     def post(self, request):
+#         try:
+#             employer = request.user.employer
+#         except:
+#             return Response({"error": "Employer profile not found"}, status=400)
+
+#         serializer = JobSerializer(data=request.data)
+
+#         if serializer.is_valid():
+#             serializer.save(employer=employer)
+#             return Response(serializer.data, status=201)
+
+#         return Response(serializer.errors, status=400)
+
+
+
+
+
+
+
+
 class JobCreateAPI(APIView):
     permission_classes = [IsAuthenticated, IsEmployer]
 
@@ -44,6 +68,63 @@ class JobCreateAPI(APIView):
             return Response(serializer.data, status=201)
 
         return Response(serializer.errors, status=400)
+
+
+
+
+
+
+
+
+
+
+
+
+class JobUpdateAPI(APIView):
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def put(self, request, pk):
+        employer = request.user.employer
+
+        try:
+            job = Job.objects.get(id=pk, employer=employer)
+        except Job.DoesNotExist:
+            return Response({"error": "Not allowed"}, status=403)
+
+        serializer = JobSerializer(job, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)
+
+
+
+
+
+
+
+
+
+class JobToggleAPI(APIView):
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def post(self, request, pk):
+        employer = request.user.employer
+
+        try:
+            job = Job.objects.get(id=pk, employer=employer)
+        except Job.DoesNotExist:
+            return Response({"error": "Not allowed"}, status=403)
+
+        job.status = 'inactive' if job.status == 'active' else 'active'
+        job.save()
+
+        return Response({"status": job.status})
+
+
+
 
 
 

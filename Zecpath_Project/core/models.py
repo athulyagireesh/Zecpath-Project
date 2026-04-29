@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils import timezone
 
 
 class CustomUserManager(BaseUserManager):
@@ -94,10 +95,78 @@ class Candidate(models.Model):
 
 
 
+# class Job(models.Model):
+#     employer = models.ForeignKey(Employer, on_delete=models.CASCADE)
+#     title = models.CharField(max_length=100)
+#     description = models.TextField()
+
+
+
+
+
+
+
+
+# class Job(models.Model):
+#     employer = models.ForeignKey('Employer', on_delete=models.CASCADE)
+
+#     title = models.CharField(max_length=255)
+#     description = models.TextField()
+#     skills = models.CharField(max_length=255, blank=True)
+
+#     experience = models.FloatField(null=True, blank=True)
+#     salary_min = models.IntegerField(null=True, blank=True)
+#     salary_max = models.IntegerField(null=True, blank=True)
+
+#     location = models.CharField(max_length=255, blank=True)
+#     job_type = models.CharField(max_length=50)
+
+#     status = models.CharField(max_length=20, default='active')
+
+#     created_at = models.DateTimeField(default=timezone.now)
+
+
+
+
 class Job(models.Model):
-    employer = models.ForeignKey(Employer, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
+    JOB_TYPE_CHOICES = [
+        ('full_time', 'Full Time'),
+        ('part_time', 'Part Time'),
+        ('internship', 'Internship'),
+    ]
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    ]
+    employer = models.ForeignKey(
+        'Employer',
+        on_delete=models.CASCADE,
+        related_name='jobs'   # ✅ OneToMany
+    )
+    title = models.CharField(max_length=255)
     description = models.TextField()
+
+    skills = models.CharField(max_length=255, blank=True)
+    experience = models.FloatField(null=True, blank=True)
+
+    salary_min = models.IntegerField(null=True, blank=True)
+    salary_max = models.IntegerField(null=True, blank=True)
+
+    location = models.CharField(max_length=255, blank=True)
+    job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES)
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+
+
+
+
 
 
 class Application(models.Model):

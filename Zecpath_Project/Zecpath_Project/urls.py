@@ -20,8 +20,7 @@ from django.conf.urls.static import static
 from django.urls import path
 from core.views import SignupAPI, LoginAPI, JobCreateAPI, JobListAPI, ApplyJobAPI, UserTestAPI
 from rest_framework_simplejwt.views import TokenRefreshView
-from core.views import CandidateProfileAPI, EmployerProfileAPI
-
+from core.views import CandidateProfileAPI, EmployerProfileAPI, JobUpdateAPI,JobToggleAPI
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -30,8 +29,9 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view()),
 
     path('api/jobs/', JobListAPI.as_view()),
-    # path('api/jobs/create/', JobCreateAPI.as_view()),
     path('api/jobs/create/', JobCreateAPI.as_view()),
+    path('api/jobs/update/<int:pk>/', JobUpdateAPI.as_view()),
+    path('api/jobs/toggle/<int:pk>/', JobToggleAPI.as_view()),
     path('api/apply/', ApplyJobAPI.as_view()),
     path('api/users/', UserTestAPI.as_view()),
     path('api/candidate/profile/', CandidateProfileAPI.as_view()),
