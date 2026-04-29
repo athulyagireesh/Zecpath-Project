@@ -7,6 +7,8 @@ from .models import Job, CustomUser, Application
 from .serializers import JobSerializer, UserSerializer , CandidateSerializer, EmployerSerializer
 from .permissions import IsAdmin, IsEmployer, IsCandidate
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # ✅ Signup
@@ -44,14 +46,19 @@ class JobCreateAPI(APIView):
         return Response(serializer.errors, status=400)
 
 
-# ✅ View Jobs
-class JobListAPI(APIView):
+
+
+
+class JobListAPI(generics.ListAPIView):
+    queryset = Job.objects.select_related('employer', 'employer__user').all()
+    serializer_class = JobSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        jobs = Job.objects.all()
-        serializer = JobSerializer(jobs, many=True)
-        return Response(serializer.data)
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['title']
+    search_fields = ['title', 'description']
+
+
 
 
 # ✅ Candidate → Apply Job

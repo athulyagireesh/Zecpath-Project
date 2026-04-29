@@ -74,19 +74,6 @@ class Employer(models.Model):
         return self.user.email
 
 
-# class Candidate(models.Model):
-#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-
-#     skills = models.TextField(blank=True)
-#     education = models.CharField(max_length=255, blank=True)
-#     experience = models.FloatField(null=True, blank=True)
-#     expected_salary = models.IntegerField(null=True, blank=True)
-
-#     is_active = models.BooleanField(default=True)
-
-#     def __str__(self):
-#         return self.user.email
-
 
 
 class Candidate(models.Model):
