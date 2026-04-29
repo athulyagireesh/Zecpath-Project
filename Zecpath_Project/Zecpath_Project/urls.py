@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view()),
 
     path('api/jobs/', JobListAPI.as_view()),
+    # path('api/jobs/create/', JobCreateAPI.as_view()),
     path('api/jobs/create/', JobCreateAPI.as_view()),
     path('api/apply/', ApplyJobAPI.as_view()),
     path('api/users/', UserTestAPI.as_view()),
