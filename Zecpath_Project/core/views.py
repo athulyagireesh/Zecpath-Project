@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
+from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Job, CustomUser, Application
@@ -52,26 +53,22 @@ class LoginAPI(TokenObtainPairView):
 
 
 
-class JobCreateAPI(APIView):
-    permission_classes = [IsAuthenticated, IsEmployer]
+# class JobCreateAPI(APIView):
+#     permission_classes = [IsAuthenticated, IsEmployer]
 
-    def post(self, request):
-        try:
-            employer = request.user.employer
-        except:
-            return Response({"error": "Employer profile not found"}, status=400)
+#     def post(self, request):
+#         try:
+#             employer = request.user.employer
+#         except:
+#             return Response({"error": "Employer profile not found"}, status=400)
 
-        serializer = JobSerializer(data=request.data)
+#         serializer = JobSerializer(data=request.data)
 
-        if serializer.is_valid():
-            serializer.save(employer=employer)
-            return Response(serializer.data, status=201)
+#         if serializer.is_valid():
+#             serializer.save(employer=employer)
+#             return Response(serializer.data, status=201)
 
-        return Response(serializer.errors, status=400)
-
-
-
-
+#         return Response(serializer.errors, status=400)
 
 
 
@@ -130,14 +127,44 @@ class JobToggleAPI(APIView):
 
 
 
+# class JobListAPI(generics.ListAPIView):
+#     queryset = Job.objects.select_related('employer', 'employer__user').all()
+#     serializer_class = JobSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     filter_backends = [DjangoFilterBackend, SearchFilter]
+#     filterset_fields = ['title']
+#     search_fields = ['title', 'description']
+
+
+
+
+
+
+
 class JobListAPI(generics.ListAPIView):
-    queryset = Job.objects.select_related('employer', 'employer__user').all()
+    queryset = Job.objects.filter(status='active').select_related('employer')
     serializer_class = JobSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['title']
-    search_fields = ['title', 'description']
+
+    filterset_fields = {
+        'skills': ['exact'],
+        'location': ['exact'],
+        'job_type': ['exact'],
+        'experience': ['gte', 'lte'],
+        'salary_min': ['gte'],
+        'salary_max': ['lte'],
+    }
+
+    search_fields = ['title', 'description', 'skills']
+
+
+
+
+
+
 
 
 
