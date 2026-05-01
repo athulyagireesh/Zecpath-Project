@@ -53,22 +53,22 @@ class LoginAPI(TokenObtainPairView):
 
 
 
-# class JobCreateAPI(APIView):
-#     permission_classes = [IsAuthenticated, IsEmployer]
+class JobCreateAPI(APIView):
+    permission_classes = [IsAuthenticated, IsEmployer]
 
-#     def post(self, request):
-#         try:
-#             employer = request.user.employer
-#         except:
-#             return Response({"error": "Employer profile not found"}, status=400)
+    def post(self, request):
+        try:
+            employer = request.user.employer
+        except:
+            return Response({"error": "Employer profile not found"}, status=400)
 
-#         serializer = JobSerializer(data=request.data)
+        serializer = JobSerializer(data=request.data)
 
-#         if serializer.is_valid():
-#             serializer.save(employer=employer)
-#             return Response(serializer.data, status=201)
+        if serializer.is_valid():
+            serializer.save(employer=employer)
+            return Response(serializer.data, status=201)
 
-#         return Response(serializer.errors, status=400)
+        return Response(serializer.errors, status=400)
 
 
 
