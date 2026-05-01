@@ -24,8 +24,8 @@ class SignupAPI(generics.CreateAPIView):
 
 
 # ✅ Login
-# class LoginAPI(TokenObtainPairView):
-#     pass
+class LoginAPI(TokenObtainPairView):
+    pass
 
 
 
