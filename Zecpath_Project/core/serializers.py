@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Job, CustomUser
-from .models import Employer, Candidate
+from .models import Employer, Candidate , Application
 
 
 
@@ -56,3 +56,8 @@ class EmployerSerializer(serializers.ModelSerializer):
 
 
 
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = '__all__'
+        read_only_fields = ['candidate', 'status']

@@ -152,7 +152,7 @@ class JobListAPI(generics.ListAPIView):
 
 
 
-# ✅ Candidate → Apply Job
+
 class ApplyJobAPI(APIView):
     permission_classes = [IsAuthenticated, IsCandidate]
 
