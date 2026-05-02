@@ -123,25 +123,25 @@ class JobToggleAPI(APIView):
 
 
 
-# class JobListAPI(generics.ListAPIView):
-#     queryset = Job.objects.filter(status='active').select_related('employer','employer__user')
-#     serializer_class = JobSerializer
-#     permission_classes = [AllowAny]
+class JobListAPI(generics.ListAPIView):
+    queryset = Job.objects.filter(status='active').select_related('employer','employer__user')
+    serializer_class = JobSerializer
+    permission_classes = [AllowAny]
 
-#     pagination_class = JobPagination
+    pagination_class = JobPagination
 
-#     filter_backends = [DjangoFilterBackend, SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
 
-#     filterset_fields = {
-#         'skills': ['exact'],
-#         'location': ['exact'],
-#         'job_type': ['exact'],
-#         'experience': ['gte', 'lte'],
-#         'salary_min': ['gte'],
-#         'salary_max': ['lte'],
-#     }
+    filterset_fields = {
+        'skills': ['exact'],
+        'location': ['exact'],
+        'job_type': ['exact'],
+        'experience': ['gte', 'lte'],
+        'salary_min': ['gte'],
+        'salary_max': ['lte'],
+    }
 
-#     search_fields = ['title', 'description', 'skills']
+    search_fields = ['title', 'description', 'skills']
 
 
 
