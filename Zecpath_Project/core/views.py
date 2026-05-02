@@ -10,43 +10,39 @@ from .permissions import IsAdmin, IsEmployer, IsCandidate
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination
 
 
-# ✅ Signup
+
+
+class JobPagination(PageNumberPagination):
+    page_size = 5
+
+
+
 class SignupAPI(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        if CustomUser.objects.filter(email=request.data.get("email")).exists():
+        email = request.data.get("email")
+
+        # ✅ check email exists in request
+        if not email:
+            return Response({"error": "Email is required"}, status=400)
+
+        # ✅ check duplicate properly
+        if CustomUser.objects.filter(email=email).exists():
             return Response({"error": "Email already exists"}, status=400)
+
         return super().create(request, *args, **kwargs)
+
 
 
 # ✅ Login
 class LoginAPI(TokenObtainPairView):
     pass
-
-
-
-# class JobCreateAPI(APIView):
-#     permission_classes = [IsAuthenticated, IsEmployer]
-
-#     def post(self, request):
-#         try:
-#             employer = request.user.employer
-#         except:
-#             return Response({"error": "Employer profile not found"}, status=400)
-
-#         serializer = JobSerializer(data=request.data)
-
-#         if serializer.is_valid():
-#             serializer.save(employer=employer)
-#             return Response(serializer.data, status=201)
-
-#         return Response(serializer.errors, status=400)
-
-
 
 
 
@@ -127,25 +123,12 @@ class JobToggleAPI(APIView):
 
 
 
-# class JobListAPI(generics.ListAPIView):
-#     queryset = Job.objects.select_related('employer', 'employer__user').all()
-#     serializer_class = JobSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     filter_backends = [DjangoFilterBackend, SearchFilter]
-#     filterset_fields = ['title']
-#     search_fields = ['title', 'description']
-
-
-
-
-
-
-
 class JobListAPI(generics.ListAPIView):
-    queryset = Job.objects.filter(status='active').select_related('employer')
+    queryset = Job.objects.filter(status='active').select_related('employer','employer__user')
     serializer_class = JobSerializer
     permission_classes = [AllowAny]
+
+    pagination_class = JobPagination
 
     filter_backends = [DjangoFilterBackend, SearchFilter]
 
@@ -192,6 +175,7 @@ class ApplyJobAPI(APIView):
         Application.objects.create(job=job, candidate=candidate)
 
         return Response({"message": "Applied successfully"}, status=201)
+
 
 
 # ✅ Admin → View Users
