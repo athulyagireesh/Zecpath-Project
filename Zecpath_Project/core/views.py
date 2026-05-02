@@ -148,32 +148,41 @@ class JobListAPI(generics.ListAPIView):
 
 
 
+class ApplyJobAPI(APIView):
+    permission_classes = [IsAuthenticated, IsCandidate]
+
+    def post(self, request):
+        job_id = request.data.get('job')
+
+        try:
+            candidate = request.user.candidate
+        except:
+            return Response({"error": "Candidate profile not found"}, status=400)
+
+        try:
+            job = Job.objects.get(id=job_id, status='active')
+        except Job.DoesNotExist:
+            return Response({"error": "Job not available"}, status=404)
+
+        # ❌ Duplicate prevention
+        if Application.objects.filter(job=job, candidate=candidate).exists():
+            return Response({"error": "Already applied"}, status=400)
+
+        # ✅ Resume binding
+        resume = candidate.resume
+
+        application = Application.objects.create(
+            job=job,
+            candidate=candidate,
+            resume=resume
+        )
+
+        return Response({
+            "message": "Applied successfully",
+            "application_id": application.id
+        }, status=201)
 
 
-
-
-# class ApplyJobAPI(APIView):
-#     permission_classes = [IsAuthenticated, IsCandidate]
-
-#     def post(self, request):
-#         job_id = request.data.get('job')
-
-#         try:
-#             candidate = request.user.candidate
-#         except:
-#             return Response({"error": "Candidate profile not found"}, status=400)
-
-#         try:
-#             job = Job.objects.get(id=job_id)
-#         except Job.DoesNotExist:
-#             return Response({"error": "Job not found"}, status=404)
-
-#         if Application.objects.filter(job=job, candidate=candidate).exists():
-#             return Response({"error": "Already applied"}, status=400)
-
-#         Application.objects.create(job=job, candidate=candidate)
-
-#         return Response({"message": "Applied successfully"}, status=201)
 
 
 
@@ -241,3 +250,15 @@ class EmployerProfileAPI(APIView):
     
 
     
+
+
+class MyApplicationsAPI(generics.ListAPIView):
+    serializer_class = ApplicationSerializer
+    permission_classes = [IsAuthenticated, IsCandidate]
+
+    def get_queryset(self):
+        return Application.objects.filter(
+            candidate=self.request.user.candidate
+        ).select_related('job')
+    
+
