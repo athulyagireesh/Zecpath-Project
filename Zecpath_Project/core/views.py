@@ -73,26 +73,24 @@ class JobCreateAPI(APIView):
 
 
 
-class JobUpdateAPI(APIView):
-    permission_classes = [IsAuthenticated, IsEmployer]
+# class JobUpdateAPI(APIView):
+#     permission_classes = [IsAuthenticated, IsEmployer]
 
-    def put(self, request, pk):
-        employer = request.user.employer
+#     def put(self, request, pk):
+#         employer = request.user.employer
 
-        try:
-            job = Job.objects.get(id=pk, employer=employer)
-        except Job.DoesNotExist:
-            return Response({"error": "Not allowed"}, status=403)
+#         try:
+#             job = Job.objects.get(id=pk, employer=employer)
+#         except Job.DoesNotExist:
+#             return Response({"error": "Not allowed"}, status=403)
 
-        serializer = JobSerializer(job, data=request.data, partial=True)
+#         serializer = JobSerializer(job, data=request.data, partial=True)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
 
-        return Response(serializer.errors, status=400)
-
-
+#         return Response(serializer.errors, status=400)
 
 
 
@@ -100,21 +98,23 @@ class JobUpdateAPI(APIView):
 
 
 
-class JobToggleAPI(APIView):
-    permission_classes = [IsAuthenticated, IsEmployer]
 
-    def post(self, request, pk):
-        employer = request.user.employer
 
-        try:
-            job = Job.objects.get(id=pk, employer=employer)
-        except Job.DoesNotExist:
-            return Response({"error": "Not allowed"}, status=403)
+# class JobToggleAPI(APIView):
+#     permission_classes = [IsAuthenticated, IsEmployer]
 
-        job.status = 'inactive' if job.status == 'active' else 'active'
-        job.save()
+#     def post(self, request, pk):
+#         employer = request.user.employer
 
-        return Response({"status": job.status})
+#         try:
+#             job = Job.objects.get(id=pk, employer=employer)
+#         except Job.DoesNotExist:
+#             return Response({"error": "Not allowed"}, status=403)
+
+#         job.status = 'inactive' if job.status == 'active' else 'active'
+#         job.save()
+
+#         return Response({"status": job.status})
 
 
 
