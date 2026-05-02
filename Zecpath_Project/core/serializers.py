@@ -53,3 +53,6 @@ class EmployerSerializer(serializers.ModelSerializer):
         model = Employer
         fields = '__all__'
         read_only_fields = ['user']
+
+
+

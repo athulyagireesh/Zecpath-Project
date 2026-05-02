@@ -169,7 +169,28 @@ class Job(models.Model):
 
 
 
+# class Application(models.Model):
+#     job = models.ForeignKey(Job, on_delete=models.CASCADE)
+#     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+#     applied_at = models.DateTimeField(auto_now_add=True)
+
+
+
 class Application(models.Model):
+    STATUS_CHOICES = [
+        ('applied', 'Applied'),
+        ('shortlisted', 'Shortlisted'),
+        ('rejected', 'Rejected'),
+    ]
+
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+
+    resume = models.FileField(upload_to='applications/', null=True, blank=True)
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='applied')
+
     applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.candidate.user.email} → {self.job.title}"
