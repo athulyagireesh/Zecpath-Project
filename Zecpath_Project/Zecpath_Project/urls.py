@@ -22,7 +22,7 @@ from core.views import SignupAPI, LoginAPI, JobCreateAPI, JobListAPI, ApplyJobAP
 from rest_framework_simplejwt.views import TokenRefreshView
 from core.views import MyApplicationsAPI
 from core.views import CandidateProfileAPI, EmployerProfileAPI, JobUpdateAPI,JobToggleAPI
-from core.views import UpdateApplicationStatusAPI
+from core.views import UpdateApplicationStatusAPI , EmployerJobsAPI , JobApplicantsAPI , EmployerAnalyticsAPI
 
 
 urlpatterns = [
@@ -44,5 +44,6 @@ urlpatterns = [
     path('api/application/status/<int:pk>/', UpdateApplicationStatusAPI.as_view()),
     path('api/employer/jobs/', EmployerJobsAPI.as_view()),
     path('api/job/<int:job_id>/applicants/', JobApplicantsAPI.as_view()),
+    path('api/employer/analytics/', EmployerAnalyticsAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
