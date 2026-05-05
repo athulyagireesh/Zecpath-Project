@@ -57,8 +57,16 @@ class EmployerSerializer(serializers.ModelSerializer):
 
 
 
+# class ApplicationSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Application
+#         fields = '__all__'
+#         read_only_fields = ['candidate', 'status']
+
+
 class ApplicationSerializer(serializers.ModelSerializer):
+    candidate_email = serializers.CharField(source='candidate.user.email', read_only=True)
+
     class Meta:
         model = Application
         fields = '__all__'
-        read_only_fields = ['candidate', 'status']
