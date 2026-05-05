@@ -22,7 +22,6 @@ from core.views import SignupAPI, LoginAPI, JobCreateAPI, JobListAPI, ApplyJobAP
 from rest_framework_simplejwt.views import TokenRefreshView
 from core.views import MyApplicationsAPI
 from core.views import CandidateProfileAPI, EmployerProfileAPI, JobUpdateAPI,JobToggleAPI
-from core.views import UpdateApplicationStatusAPI
 
 urlpatterns = [
     path('admin/', admin.site.urls),
