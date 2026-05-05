@@ -190,14 +190,14 @@ class Job(models.Model):
 
 
 
-# class Application(models.Model):
-#     STATUS_CHOICES = [
-#         ('applied', 'Applied'),
-#         ('shortlisted', 'Shortlisted'),
-#         ('interview', 'Interview Scheduled'),
-#         ('rejected', 'Rejected'),
-#         ('selected', 'Selected'),
-#     ]
+class Application(models.Model):
+    STATUS_CHOICES = [
+        ('applied', 'Applied'),
+        ('shortlisted', 'Shortlisted'),
+        ('interview', 'Interview Scheduled'),
+        ('rejected', 'Rejected'),
+        ('selected', 'Selected'),
+    ]
 
     job = models.ForeignKey('Job', on_delete=models.CASCADE)
     candidate = models.ForeignKey('Candidate', on_delete=models.CASCADE)
