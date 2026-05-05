@@ -262,3 +262,47 @@ class MyApplicationsAPI(generics.ListAPIView):
         ).select_related('job')
     
 
+
+
+class UpdateApplicationStatusAPI(APIView):
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def post(self, request, pk):
+        employer = request.user.employer
+
+        try:
+            application = Application.objects.select_related('job').get(id=pk)
+        except Application.DoesNotExist:
+            return Response({"error": "Application not found"}, status=404)
+
+        # ✅ Ownership check
+        if application.job.employer != employer:
+            return Response({"error": "Not allowed"}, status=403)
+
+        new_status = request.data.get("status")
+
+        valid_transitions = {
+            'applied': ['shortlisted', 'rejected'],
+            'shortlisted': ['interview', 'rejected'],
+            'interview': ['selected', 'rejected'],
+            'selected': [],
+            'rejected': []
+        }
+
+        current_status = application.status
+
+        if new_status not in valid_transitions.get(current_status, []):
+            return Response({
+                "error": f"Cannot move from {current_status} → {new_status}"
+            }, status=400)
+
+        application.status = new_status
+        application.save()
+
+        return Response({
+            "message": "Status updated",
+            "new_status": application.status
+        })
+    
+
+
