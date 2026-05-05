@@ -31,15 +31,15 @@ urlpatterns = [
     path('api/login/', LoginAPI.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
 
-#     path('api/jobs/', JobListAPI.as_view()),
-#     path('api/jobs/create/', JobCreateAPI.as_view()),
-#     path('api/jobs/update/<int:pk>/', JobUpdateAPI.as_view()),
-#     path('api/jobs/toggle/<int:pk>/', JobToggleAPI.as_view()),
-#     path('api/apply/', ApplyJobAPI.as_view()),
-#     path('api/my-applications/', MyApplicationsAPI.as_view()),
-#     path('api/users/', UserTestAPI.as_view()),
-#     path('api/candidate/profile/', CandidateProfileAPI.as_view()),
-#     path('api/employer/profile/', EmployerProfileAPI.as_view()),
-#     path('api/application/status/<int:pk>/', UpdateApplicationStatusAPI.as_view()),
+    path('api/jobs/', JobListAPI.as_view()),
+    path('api/jobs/create/', JobCreateAPI.as_view()),
+    path('api/jobs/update/<int:pk>/', JobUpdateAPI.as_view()),
+    path('api/jobs/toggle/<int:pk>/', JobToggleAPI.as_view()),
+    path('api/apply/', ApplyJobAPI.as_view()),
+    path('api/my-applications/', MyApplicationsAPI.as_view()),
+    path('api/users/', UserTestAPI.as_view()),
+    path('api/candidate/profile/', CandidateProfileAPI.as_view()),
+    path('api/employer/profile/', EmployerProfileAPI.as_view()),
+    path('api/application/status/<int:pk>/', UpdateApplicationStatusAPI.as_view()),
 
-# ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
