@@ -342,3 +342,28 @@ class JobApplicantsAPI(ListAPIView):
             job__id=job_id,
             job__employer=self.request.user.employer
         )
+    
+
+
+
+
+
+
+class EmployerAnalyticsAPI(APIView):
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def get(self, request):
+        employer = request.user.employer
+
+        total_jobs = Job.objects.filter(employer=employer).count()
+        total_applications = Application.objects.filter(job__employer=employer).count()
+        shortlisted = Application.objects.filter(
+            job__employer=employer,
+            status='shortlisted'
+        ).count()
+
+        return Response({
+            "total_jobs": total_jobs,
+            "total_applications": total_applications,
+            "shortlisted": shortlisted
+        })
