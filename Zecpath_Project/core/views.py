@@ -13,6 +13,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from .serializers import ApplicationSerializer
 from .permissions import IsCandidate
+from rest_framework.generics import ListAPIView
+from rest_framework.filters import SearchFilter
 
 
 
@@ -306,3 +308,37 @@ class UpdateApplicationStatusAPI(APIView):
     
 
 
+
+
+class EmployerJobsAPI(ListAPIView):
+    serializer_class = JobSerializer
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def get_queryset(self):
+        return Job.objects.filter(
+            employer=self.request.user.employer
+        )
+    
+
+
+
+
+
+
+
+
+
+
+class JobApplicantsAPI(ListAPIView):
+    serializer_class = ApplicationSerializer
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    filter_backends = [SearchFilter]
+    search_fields = ['candidate__user__email']
+
+    def get_queryset(self):
+        job_id = self.kwargs['job_id']
+        return Application.objects.filter(
+            job__id=job_id,
+            job__employer=self.request.user.employer
+        )

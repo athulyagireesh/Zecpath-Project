@@ -42,5 +42,7 @@ urlpatterns = [
     path('api/candidate/profile/', CandidateProfileAPI.as_view()),
     path('api/employer/profile/', EmployerProfileAPI.as_view()),
     path('api/application/status/<int:pk>/', UpdateApplicationStatusAPI.as_view()),
+    path('api/employer/jobs/', EmployerJobsAPI.as_view()),
+    path('api/job/<int:job_id>/applicants/', JobApplicantsAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
