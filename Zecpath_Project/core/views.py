@@ -377,7 +377,6 @@ class EmployerAnalyticsAPI(APIView):
 
 
 
-
 class AppliedJobsAPI(generics.ListAPIView):
     serializer_class = ApplicationSerializer
     permission_classes = [IsAuthenticated, IsCandidate]
@@ -386,6 +385,8 @@ class AppliedJobsAPI(generics.ListAPIView):
         return Application.objects.filter(
             candidate=self.request.user.candidate
         ).select_related('job')
+    
+    
     
 
 
