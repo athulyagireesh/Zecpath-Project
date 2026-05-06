@@ -367,3 +367,39 @@ class EmployerAnalyticsAPI(APIView):
             "total_applications": total_applications,
             "shortlisted": shortlisted
         })
+    
+
+
+
+
+
+
+
+
+
+
+class AppliedJobsAPI(generics.ListAPIView):
+    serializer_class = ApplicationSerializer
+    permission_classes = [IsAuthenticated, IsCandidate]
+
+    def get_queryset(self):
+        return Application.objects.filter(
+            candidate=self.request.user.candidate
+        ).select_related('job')
+    
+
+
+
+
+class RecommendedJobsAPI(generics.ListAPIView):
+    serializer_class = JobSerializer
+    permission_classes = [IsAuthenticated, IsCandidate]
+
+    def get_queryset(self):
+        candidate = self.request.user.candidate
+        skills = candidate.skills
+
+        return Job.objects.filter(
+            skills__icontains=skills,
+            status='active'
+        )
