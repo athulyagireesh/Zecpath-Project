@@ -435,3 +435,61 @@ class ApproveEmployerAPI(APIView):
     
 
 
+
+
+class BlockUserAPI(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def post(self, request, pk):
+        try:
+            user = CustomUser.objects.get(id=pk)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+        user.is_active = False
+        user.save()
+
+        return Response({
+            "message": "User blocked"
+        })
+    
+
+
+class RemoveJobAPI(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def delete(self, request, pk):
+        try:
+            job = Job.objects.get(id=pk)
+        except Job.DoesNotExist:
+            return Response({"error": "Job not found"}, status=404)
+
+        job.delete()
+
+        return Response({
+            "message": "Spam job removed"
+        })
+    
+
+
+
+
+class PlatformStatsAPI(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get(self, request):
+
+        total_users = CustomUser.objects.count()
+        total_jobs = Job.objects.count()
+        total_applications = Application.objects.count()
+
+        employers = CustomUser.objects.filter(role='employer').count()
+        candidates = CustomUser.objects.filter(role='candidate').count()
+
+        return Response({
+            "total_users": total_users,
+            "total_jobs": total_jobs,
+            "total_applications": total_applications,
+            "employers": employers,
+            "candidates": candidates
+        })
