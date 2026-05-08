@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .models import Job, CustomUser, Application ,Employer
+from .models import Job, CustomUser, Application ,Employer , AdminLog
 from .serializers import JobSerializer, UserSerializer , CandidateSerializer, EmployerSerializer
 from .permissions import IsAdmin, IsEmployer, IsCandidate
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -15,6 +15,7 @@ from .serializers import ApplicationSerializer
 from .permissions import IsCandidate
 from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter
+
 
 
 
@@ -273,6 +274,7 @@ class MyApplicationsAPI(generics.ListAPIView):
 
 
 
+
 class UpdateApplicationStatusAPI(APIView):
     permission_classes = [IsAuthenticated, IsEmployer]
 
@@ -437,6 +439,8 @@ class ApproveEmployerAPI(APIView):
 
 
 
+
+
 class BlockUserAPI(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
@@ -449,10 +453,18 @@ class BlockUserAPI(APIView):
         user.is_active = False
         user.save()
 
+        # ✅ Admin audit log
+        AdminLog.objects.create(
+            admin=request.user,
+            action=f"Blocked user {user.email}"
+        )
+
         return Response({
             "message": "User blocked"
         })
-    
+
+
+
 
 
 class RemoveJobAPI(APIView):
@@ -470,6 +482,7 @@ class RemoveJobAPI(APIView):
             "message": "Spam job removed"
         })
     
+
 
 
 
@@ -493,3 +506,22 @@ class PlatformStatsAPI(APIView):
             "employers": employers,
             "candidates": candidates
         })
+    
+
+
+
+
+
+
+class AdminLogsAPI(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get(self, request):
+
+        logs = AdminLog.objects.all().values(
+            'id',
+            'action',
+            'created_at'
+        )
+
+        return Response(logs)
