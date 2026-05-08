@@ -22,7 +22,7 @@ from core.views import SignupAPI, LoginAPI, JobCreateAPI, JobListAPI, ApplyJobAP
 from rest_framework_simplejwt.views import TokenRefreshView
 from core.views import MyApplicationsAPI
 from core.views import CandidateProfileAPI, EmployerProfileAPI, JobUpdateAPI,JobToggleAPI
-from core.views import UpdateApplicationStatusAPI , EmployerJobsAPI , JobApplicantsAPI , EmployerAnalyticsAPI , AppliedJobsAPI , RecommendedJobsAPI
+from core.views import UpdateApplicationStatusAPI , EmployerJobsAPI , JobApplicantsAPI , EmployerAnalyticsAPI , AppliedJobsAPI , RecommendedJobsAPI , ApproveEmployerAPI
 
 
 urlpatterns = [
@@ -47,5 +47,6 @@ urlpatterns = [
     path('api/employer/analytics/', EmployerAnalyticsAPI.as_view()),
     path('api/candidate/applied-jobs/', AppliedJobsAPI.as_view()),
     path('api/candidate/recommended-jobs/', RecommendedJobsAPI.as_view()),
+    path('api/admin/approve-employer/<int:pk>/', ApproveEmployerAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

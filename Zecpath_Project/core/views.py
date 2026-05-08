@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .models import Job, CustomUser, Application
+from .models import Job, CustomUser, Application ,Employer
 from .serializers import JobSerializer, UserSerializer , CandidateSerializer, EmployerSerializer
 from .permissions import IsAdmin, IsEmployer, IsCandidate
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -150,6 +150,8 @@ class JobListAPI(generics.ListAPIView):
 
 
 
+
+
 class ApplyJobAPI(APIView):
     permission_classes = [IsAuthenticated, IsCandidate]
 
@@ -188,7 +190,7 @@ class ApplyJobAPI(APIView):
 
 
 
-# ✅ Admin → View Users
+
 class UserTestAPI(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
@@ -197,6 +199,8 @@ class UserTestAPI(APIView):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
     
+
+
 
 
 
@@ -224,6 +228,9 @@ class CandidateProfileAPI(APIView):
         candidate.save()
         return Response({"message": "Profile soft deleted"})
     
+
+
+
 
 
 
@@ -386,7 +393,7 @@ class AppliedJobsAPI(generics.ListAPIView):
             candidate=self.request.user.candidate
         ).select_related('job')
     
-    
+
     
 
 
@@ -404,3 +411,27 @@ class RecommendedJobsAPI(generics.ListAPIView):
             skills__icontains=skills,
             status='active'
         )
+    
+
+
+
+
+
+class ApproveEmployerAPI(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def post(self, request, pk):
+        try:
+            employer = Employer.objects.get(id=pk)
+        except Employer.DoesNotExist:
+            return Response({"error": "Employer not found"}, status=404)
+
+        employer.is_verified = True
+        employer.save()
+
+        return Response({
+            "message": "Employer approved"
+        })
+    
+
+
