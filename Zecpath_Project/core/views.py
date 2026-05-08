@@ -417,21 +417,21 @@ class RecommendedJobsAPI(generics.ListAPIView):
 
 
 
-class ApproveEmployerAPI(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+# class ApproveEmployerAPI(APIView):
+#     permission_classes = [IsAuthenticated, IsAdmin]
 
-    def post(self, request, pk):
-        try:
-            employer = Employer.objects.get(id=pk)
-        except Employer.DoesNotExist:
-            return Response({"error": "Employer not found"}, status=404)
+#     def post(self, request, pk):
+#         try:
+#             employer = Employer.objects.get(id=pk)
+#         except Employer.DoesNotExist:
+#             return Response({"error": "Employer not found"}, status=404)
 
-        employer.is_verified = True
-        employer.save()
+#         employer.is_verified = True
+#         employer.save()
 
-        return Response({
-            "message": "Employer approved"
-        })
+#         return Response({
+#             "message": "Employer approved"
+#         })
     
 
 
