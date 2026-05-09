@@ -50,9 +50,9 @@ urlpatterns = [
     path('api/candidate/recommended-jobs/', RecommendedJobsAPI.as_view()),
     path('api/admin/approve-employer/<int:pk>/', ApproveEmployerAPI.as_view()),
     path('api/admin/block-user/<int:pk>/', BlockUserAPI.as_view()),
-    # path('api/admin/remove-job/<int:pk>/', RemoveJobAPI.as_view()),
-    # path('api/admin/platform-stats/', PlatformStatsAPI.as_view()),
-    # path('api/admin/logs/', AdminLogsAPI.as_view()),
-    # path('api/resume-parser/', ResumeParserAPI.as_view()),
+    path('api/admin/remove-job/<int:pk>/', RemoveJobAPI.as_view()),
+    path('api/admin/platform-stats/', PlatformStatsAPI.as_view()),
+    path('api/admin/logs/', AdminLogsAPI.as_view()),
+    path('api/resume-parser/', ResumeParserAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
