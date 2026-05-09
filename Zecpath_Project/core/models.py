@@ -217,7 +217,6 @@ class Application(models.Model):
 
 
 
-
 class AdminLog(models.Model):
     admin = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     action = models.CharField(max_length=255)
@@ -225,3 +224,4 @@ class AdminLog(models.Model):
 
     def __str__(self):
         return self.action
+    

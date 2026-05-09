@@ -23,6 +23,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from core.views import MyApplicationsAPI
 from core.views import CandidateProfileAPI, EmployerProfileAPI, JobUpdateAPI,JobToggleAPI
 from core.views import UpdateApplicationStatusAPI , EmployerJobsAPI ,JobApplicantsAPI , EmployerAnalyticsAPI , AppliedJobsAPI , RecommendedJobsAPI , ApproveEmployerAPI , BlockUserAPI ,  RemoveJobAPI , PlatformStatsAPI ,  AdminLogsAPI 
+from core.views import ResumeParserAPI
 
 
 urlpatterns = [
@@ -52,5 +53,6 @@ urlpatterns = [
     path('api/admin/remove-job/<int:pk>/', RemoveJobAPI.as_view()),
     path('api/admin/platform-stats/', PlatformStatsAPI.as_view()),
     path('api/admin/logs/', AdminLogsAPI.as_view()),
+    path('api/resume-parser/', ResumeParserAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

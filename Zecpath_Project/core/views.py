@@ -15,6 +15,11 @@ from .serializers import ApplicationSerializer
 from .permissions import IsCandidate
 from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter
+import re
+import PyPDF2
+import pdfplumber
+from docx import Document
+from .serializers import ResumeUploadSerializer
 
 
 
@@ -525,3 +530,64 @@ class AdminLogsAPI(APIView):
         )
 
         return Response(logs)
+    
+
+
+
+
+
+
+
+class ResumeParserAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ResumeUploadSerializer(data=request.data)
+
+        if serializer.is_valid():
+            file = serializer.validated_data['file']
+
+            extracted_text = ""
+
+            # ✅ PDF Extraction
+            if file.name.endswith('.pdf'):
+
+                try:
+                    pdf = PyPDF2.PdfReader(file)
+
+                    for page in pdf.pages:
+                        extracted_text += page.extract_text()
+
+                except:
+                    return Response({
+                        "error": "PDF extraction failed"
+                    }, status=400)
+
+            # ✅ DOCX Extraction
+            elif file.name.endswith('.docx'):
+
+                try:
+                    doc = Document(file)
+
+                    for para in doc.paragraphs:
+                        extracted_text += para.text + "\n"
+
+                except:
+                    return Response({
+                        "error": "DOCX extraction failed"
+                    }, status=400)
+
+            else:
+                return Response({
+                    "error": "Only PDF or DOCX supported"
+                }, status=400)
+
+            # ✅ CLEANING
+            cleaned_text = re.sub(r'\s+', ' ', extracted_text).strip()
+
+            return Response({
+                "raw_text": extracted_text,
+                "cleaned_text": cleaned_text
+            })
+
+        return Response(serializer.errors, status=400)

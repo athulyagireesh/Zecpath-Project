@@ -66,3 +66,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = '__all__'
+
+
+
+
+class ResumeUploadSerializer(serializers.Serializer):
+    file = serializers.FileField()
