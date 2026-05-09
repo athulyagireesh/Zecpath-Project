@@ -15,11 +15,11 @@ from .serializers import ApplicationSerializer
 from .permissions import IsCandidate
 from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter
-import re
-import PyPDF2
-import pdfplumber
-from docx import Document
-from .serializers import ResumeUploadSerializer
+# import re
+# import PyPDF2
+# import pdfplumber
+# from docx import Document
+# from .serializers import ResumeUploadSerializer
 
 
 
