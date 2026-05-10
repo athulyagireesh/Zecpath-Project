@@ -55,6 +55,6 @@ urlpatterns = [
     path('api/admin/platform-stats/', PlatformStatsAPI.as_view()),
     path('api/admin/logs/', AdminLogsAPI.as_view()),
     path('api/resume-parser/', ResumeParserAPI.as_view()),
-    # path('api/resume-nlp/', ResumeNLPAPI.as_view()),
+    path('api/resume-nlp/', ResumeNLPAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
