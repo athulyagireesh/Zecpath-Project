@@ -24,20 +24,20 @@ from .serializers import ResumeUploadSerializer
 
 
 
-SKILLS_LIBRARY = [
-    "python",
-    "django",
-    "rest api",
-    "sql",
-    "mysql",
-    "html",
-    "css",
-    "javascript",
-    "react",
-    "java",
-    "git",
-    "docker"
-]
+# SKILLS_LIBRARY = [
+#     "python",
+#     "django",
+#     "rest api",
+#     "sql",
+#     "mysql",
+#     "html",
+#     "css",
+#     "javascript",
+#     "react",
+#     "java",
+#     "git",
+#     "docker"
+# ]
 
 
 
