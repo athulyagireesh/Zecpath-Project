@@ -24,6 +24,22 @@ from .serializers import ResumeUploadSerializer
 
 
 
+SKILLS_LIBRARY = [
+    "python",
+    "django",
+    "rest api",
+    "sql",
+    "mysql",
+    "html",
+    "css",
+    "javascript",
+    "react",
+    "java",
+    "git",
+    "docker"
+]
+
+
 
 class JobPagination(PageNumberPagination):
     page_size = 5
@@ -588,6 +604,113 @@ class ResumeParserAPI(APIView):
             return Response({
                 "raw_text": extracted_text,
                 "cleaned_text": cleaned_text
+            })
+
+        return Response(serializer.errors, status=400)
+    
+
+
+
+
+
+
+class ResumeNLPAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+
+        serializer = ResumeUploadSerializer(data=request.data)
+
+        if serializer.is_valid():
+
+            file = serializer.validated_data['file']
+
+            extracted_text = ""
+
+            # ✅ PDF extraction
+            if file.name.endswith('.pdf'):
+
+                try:
+                    pdf = PyPDF2.PdfReader(file)
+
+                    for page in pdf.pages:
+                        text = page.extract_text()
+
+                        if text:
+                            extracted_text += text
+
+                except:
+                    return Response({
+                        "error": "PDF extraction failed"
+                    }, status=400)
+
+            # ✅ DOCX extraction
+            elif file.name.endswith('.docx'):
+
+                try:
+                    doc = Document(file)
+
+                    for para in doc.paragraphs:
+                        extracted_text += para.text + "\n"
+
+                except:
+                    return Response({
+                        "error": "DOCX extraction failed"
+                    }, status=400)
+
+            else:
+                return Response({
+                    "error": "Only PDF or DOCX supported"
+                }, status=400)
+
+            # ✅ CLEAN TEXT
+            cleaned_text = re.sub(r'\s+', ' ', extracted_text).strip()
+
+            # ✅ TOKENIZATION
+            tokens = cleaned_text.lower().split()
+
+            # ✅ SKILL EXTRACTION
+            found_skills = []
+
+            for skill in SKILLS_LIBRARY:
+
+                if skill.lower() in cleaned_text.lower():
+                    found_skills.append(skill)
+
+            # ✅ EXPERIENCE EXTRACTION
+            experience = re.findall(
+                r'(\d+)\s+years?',
+                cleaned_text.lower()
+            )
+
+            # ✅ EDUCATION DETECTION
+            education_keywords = [
+                "btech",
+                "bca",
+                "mca",
+                "bsc",
+                "msc",
+                "computer science"
+            ]
+
+            education_found = []
+
+            for edu in education_keywords:
+
+                if edu.lower() in cleaned_text.lower():
+                    education_found.append(edu)
+
+            # ✅ STRUCTURED JSON OUTPUT
+            parsed_resume = {
+                "skills": found_skills,
+                "experience_years": experience,
+                "education": education_found,
+                "tokens_count": len(tokens)
+            }
+
+            return Response({
+                "cleaned_text": cleaned_text,
+                "parsed_resume": parsed_resume
             })
 
         return Response(serializer.errors, status=400)
