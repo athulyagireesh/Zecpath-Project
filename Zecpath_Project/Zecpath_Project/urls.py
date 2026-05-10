@@ -24,6 +24,7 @@ from core.views import MyApplicationsAPI
 from core.views import CandidateProfileAPI, EmployerProfileAPI, JobUpdateAPI,JobToggleAPI
 from core.views import UpdateApplicationStatusAPI , EmployerJobsAPI ,JobApplicantsAPI , EmployerAnalyticsAPI , AppliedJobsAPI , RecommendedJobsAPI , ApproveEmployerAPI , BlockUserAPI ,  RemoveJobAPI , PlatformStatsAPI ,  AdminLogsAPI 
 from core.views import ResumeParserAPI
+from core.views import ResumeNLPAPI
 
 
 urlpatterns = [
@@ -54,5 +55,6 @@ urlpatterns = [
     path('api/admin/platform-stats/', PlatformStatsAPI.as_view()),
     path('api/admin/logs/', AdminLogsAPI.as_view()),
     path('api/resume-parser/', ResumeParserAPI.as_view()),
+    path('api/resume-nlp/', ResumeNLPAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
