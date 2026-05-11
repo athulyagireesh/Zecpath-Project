@@ -797,12 +797,16 @@ class ATSMatchAPI(APIView):
             #     if candidate.experience >= job.experience:
             #         score += 30
 
+            if candidate.experience and job.experience:
 
-            
+                if float(candidate.experience) >= float(job.experience):
+
+                    score += 30
+
 
             # ✅ EDUCATION BONUS
             if candidate.education:
-                score += 20
+                score += 10
 
             # ✅ NORMALIZATION
             if score > 100:
