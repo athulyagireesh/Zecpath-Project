@@ -20,6 +20,7 @@ import PyPDF2
 import pdfplumber
 from docx import Document
 from .serializers import ResumeUploadSerializer
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 
 
@@ -228,7 +229,7 @@ class UserTestAPI(APIView):
 
 class CandidateProfileAPI(APIView):
     permission_classes = [IsAuthenticated, IsCandidate]
-    parser_classes = [MultiPartParser, FormParser]   # 👈 ADD THIS LINE
+    parser_classes = [MultiPartParser, FormParser,JSONParser]   # 👈 ADD THIS LINE
 
     def get(self, request):
         candidate = request.user.candidate
@@ -782,9 +783,9 @@ class ATSMatchAPI(APIView):
 
                 if skill in candidate_skills:
 
-                    score += 30
-
                     matched_skills.append(skill)
+
+                    score += 20
 
 
 
