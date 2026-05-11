@@ -243,6 +243,32 @@ class CandidateProfileAPI(APIView):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=400)
+    
+
+    def put(self, request):
+
+        candidate = request.user.candidate
+
+        data = request.data.copy()
+
+    # ✅ safe conversion
+        if data.get('experience'):
+            data['experience'] = float(data.get('experience'))
+
+        serializer = CandidateSerializer(
+            candidate,
+            data=data,
+            partial=True
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)
+
 
     def delete(self, request):
         candidate = request.user.candidate
