@@ -25,6 +25,7 @@ from core.views import CandidateProfileAPI, EmployerProfileAPI, JobUpdateAPI,Job
 from core.views import UpdateApplicationStatusAPI , EmployerJobsAPI ,JobApplicantsAPI , EmployerAnalyticsAPI , AppliedJobsAPI , RecommendedJobsAPI , ApproveEmployerAPI , BlockUserAPI ,  RemoveJobAPI , PlatformStatsAPI ,  AdminLogsAPI 
 from core.views import ResumeParserAPI
 from core.views import ResumeNLPAPI
+from core.views import ATSMatchAPI
 
 
 urlpatterns = [
@@ -56,5 +57,6 @@ urlpatterns = [
     path('api/admin/logs/', AdminLogsAPI.as_view()),
     path('api/resume-parser/', ResumeParserAPI.as_view()),
     path('api/resume-nlp/', ResumeNLPAPI.as_view()),
+    path('api/ats-match/<int:job_id>/',ATSMatchAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

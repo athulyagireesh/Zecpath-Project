@@ -714,3 +714,83 @@ class ResumeNLPAPI(APIView):
             })
 
         return Response(serializer.errors, status=400)
+    
+
+
+
+
+
+class ATSMatchAPI(APIView):
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def get(self, request, job_id):
+
+        try:
+            job = Job.objects.get(
+                id=job_id,
+                employer=request.user.employer
+            )
+
+        except Job.DoesNotExist:
+            return Response({
+                "error": "Job not found"
+            }, status=404)
+
+        applications = Application.objects.filter(job=job)
+
+        ranked_candidates = []
+
+        for app in applications:
+
+            candidate = app.candidate
+
+            score = 0
+
+            # ✅ SKILL MATCHING
+            job_skills = job.skills.lower().split(',')
+
+            candidate_skills = candidate.skills.lower().split(',')
+
+            matched_skills = []
+
+            for skill in job_skills:
+
+                if skill.strip() in candidate_skills:
+                    score += 30
+                    matched_skills.append(skill.strip())
+
+            # ✅ EXPERIENCE MATCHING
+            if candidate.experience:
+
+                if candidate.experience >= job.experience:
+                    score += 30
+
+            # ✅ EDUCATION BONUS
+            if candidate.education:
+                score += 20
+
+            # ✅ NORMALIZATION
+            if score > 100:
+                score = 100
+
+            # ✅ SAVE ATS SCORE
+            app.ats_score = score
+            app.save()
+
+            ranked_candidates.append({
+                "candidate_email": candidate.user.email,
+                "matched_skills": matched_skills,
+                "ats_score": score
+            })
+
+        # ✅ SORT DESCENDING
+        ranked_candidates = sorted(
+            ranked_candidates,
+            key=lambda x: x['ats_score'],
+            reverse=True
+        )
+
+        return Response({
+            "job": job.title,
+            "ranked_candidates": ranked_candidates
+        })

@@ -200,6 +200,7 @@ class Application(models.Model):
     ]
 
     job = models.ForeignKey('Job', on_delete=models.CASCADE)
+
     candidate = models.ForeignKey('Candidate', on_delete=models.CASCADE)
 
     resume = models.FileField(upload_to='applications/', null=True, blank=True)
@@ -208,7 +209,9 @@ class Application(models.Model):
 
     applied_at = models.DateTimeField(auto_now_add=True)
 
-    updated_at = models.DateTimeField(auto_now=True)   # ✅ audit
+    updated_at = models.DateTimeField(auto_now=True) 
+      
+    ats_score = models.FloatField(default=0)
 
     def __str__(self):
         return f"{self.candidate.user.email} → {self.job.title}"
