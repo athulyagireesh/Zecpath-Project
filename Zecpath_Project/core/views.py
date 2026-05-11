@@ -791,11 +791,14 @@ class ATSMatchAPI(APIView):
 
 
 
-            # ✅ EXPERIENCE MATCHING
-            if candidate.experience:
+        
+            # if candidate.experience:
 
-                if candidate.experience >= job.experience:
-                    score += 30
+            #     if candidate.experience >= job.experience:
+            #         score += 30
+
+
+            
 
             # ✅ EDUCATION BONUS
             if candidate.education:
