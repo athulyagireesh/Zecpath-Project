@@ -234,16 +234,7 @@ class CandidateProfileAPI(APIView):
         candidate = request.user.candidate
         return Response(CandidateSerializer(candidate).data)
 
-    def put(self, request):
-        candidate = request.user.candidate
-        serializer = CandidateSerializer(candidate, data=request.data, partial=True)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=400)
-    
 
     def put(self, request):
 
