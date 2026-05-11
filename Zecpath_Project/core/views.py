@@ -746,18 +746,32 @@ class ATSMatchAPI(APIView):
 
             score = 0
 
-            # ✅ SKILL MATCHING
-            job_skills = job.skills.lower().split(',')
 
-            candidate_skills = candidate.skills.lower().split(',')
+
+
+            job_skills = [
+                skill.strip().lower()
+                for skill in job.skills.split(',')
+            ]
+
+            candidate_skills = [
+                skill.strip().lower()
+                for skill in candidate.skills.split(',')
+            ]
 
             matched_skills = []
 
             for skill in job_skills:
 
-                if skill.strip() in candidate_skills:
+                if skill in candidate_skills:
+
                     score += 30
-                    matched_skills.append(skill.strip())
+
+                    matched_skills.append(skill)
+
+
+
+
 
             # ✅ EXPERIENCE MATCHING
             if candidate.experience:
