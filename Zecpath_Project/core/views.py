@@ -764,9 +764,7 @@ class ATSMatchAPI(APIView):
 
             score = 0
 
-
-
-
+            # ✅ CLEAN SKILLS
             job_skills = [
                 skill.strip().lower()
                 for skill in job.skills.split(',')
@@ -777,43 +775,37 @@ class ATSMatchAPI(APIView):
                 for skill in candidate.skills.split(',')
             ]
 
+            print("JOB SKILLS:", job_skills)
+            print("CANDIDATE SKILLS:", candidate_skills)
+
             matched_skills = []
 
+            # ✅ SKILL MATCHING
             for skill in job_skills:
 
-                # if skill in candidate_skills:
-                if skill.strip().lower() in candidate_skills:
+                if skill in candidate_skills:
 
                     matched_skills.append(skill)
 
                     score += 20
 
+            print("MATCHED:", matched_skills)
 
+            # ✅ EXPERIENCE MATCHING
+            if candidate.experience:
 
-
-
-        
-            # if candidate.experience:
-
-            #     if candidate.experience >= job.experience:
-            #         score += 30
-
-            if candidate.experience and job.experience:
-
-                if float(candidate.experience) >= float(job.experience):
-
-                    score += 30
-
+                if candidate.experience >= job.experience:
+                    score += 20
 
             # ✅ EDUCATION BONUS
             if candidate.education:
-                score += 10
+                score += 20
 
-            # ✅ NORMALIZATION
+            # ✅ MAX SCORE LIMIT
             if score > 100:
                 score = 100
 
-            # ✅ SAVE ATS SCORE
+            # ✅ SAVE SCORE
             app.ats_score = score
             app.save()
 
@@ -823,7 +815,6 @@ class ATSMatchAPI(APIView):
                 "ats_score": score
             })
 
-        # ✅ SORT DESCENDING
         ranked_candidates = sorted(
             ranked_candidates,
             key=lambda x: x['ats_score'],
@@ -833,4 +824,53 @@ class ATSMatchAPI(APIView):
         return Response({
             "job": job.title,
             "ranked_candidates": ranked_candidates
+        })
+    
+
+
+
+
+
+
+
+class AutoShortlistAPI(APIView):
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def post(self, request, job_id):
+
+        try:
+            job = Job.objects.get(
+                id=job_id,
+                employer=request.user.employer
+            )
+
+        except Job.DoesNotExist:
+            return Response({
+                "error": "Job not found"
+            }, status=404)
+
+        applications = Application.objects.filter(job=job)
+
+        shortlisted = []
+        rejected = []
+
+        for app in applications:
+
+            # ✅ Threshold logic
+            if app.ats_score >= 60:
+
+                app.status = "shortlisted"
+                shortlisted.append(app.candidate.user.email)
+
+            else:
+
+                app.status = "rejected"
+                rejected.append(app.candidate.user.email)
+
+            app.save()
+
+        return Response({
+            "job": job.title,
+            "shortlisted_candidates": shortlisted,
+            "rejected_candidates": rejected
         })
