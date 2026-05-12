@@ -63,6 +63,6 @@ urlpatterns = [
     path('api/ats-match/<int:job_id>/',ATSMatchAPI.as_view()),
     path('api/auto-shortlist/<int:job_id>/',AutoShortlistAPI.as_view()),
     path('api/manual-status/<int:application_id>/',ManualStatusOverrideAPI.as_view()),
-    # path('api/eligibility/<int:application_id>/',EligibilityCheckAPI.as_view()),
+    path('api/eligibility/<int:application_id>/',EligibilityCheckAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
