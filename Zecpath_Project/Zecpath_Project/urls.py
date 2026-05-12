@@ -26,6 +26,9 @@ from core.views import UpdateApplicationStatusAPI , EmployerJobsAPI ,JobApplican
 from core.views import ResumeParserAPI
 from core.views import ResumeNLPAPI
 from core.views import ATSMatchAPI
+from core.views import AutoShortlistAPI
+from core.views import ManualStatusOverrideAPI
+from core.views import EligibilityCheckAPI
 
 
 urlpatterns = [
@@ -58,5 +61,8 @@ urlpatterns = [
     path('api/resume-parser/', ResumeParserAPI.as_view()),
     path('api/resume-nlp/', ResumeNLPAPI.as_view()),
     path('api/ats-match/<int:job_id>/',ATSMatchAPI.as_view()),
+    path('api/auto-shortlist/<int:job_id>/',AutoShortlistAPI.as_view()),
+    path('api/manual-status/<int:application_id>/',ManualStatusOverrideAPI.as_view()),
+    path('api/eligibility/<int:application_id>/',EligibilityCheckAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
