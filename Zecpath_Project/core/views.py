@@ -781,7 +781,8 @@ class ATSMatchAPI(APIView):
 
             for skill in job_skills:
 
-                if skill in candidate_skills:
+                # if skill in candidate_skills:
+                if skill.strip().lower() in candidate_skills:
 
                     matched_skills.append(skill)
 
