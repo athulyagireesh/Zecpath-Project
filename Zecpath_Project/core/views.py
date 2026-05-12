@@ -909,3 +909,44 @@ class EligibilityCheckAPI(APIView):
 
 
 
+
+
+
+class ManualStatusOverrideAPI(APIView):
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def post(self, request, application_id):
+
+        try:
+            application = Application.objects.get(
+                id=application_id,
+                job__employer=request.user.employer
+            )
+
+        except Application.DoesNotExist:
+            return Response({
+                "error": "Application not found"
+            }, status=404)
+
+        new_status = request.data.get("status")
+
+        allowed_status = [
+            "applied",
+            "shortlisted",
+            "rejected",
+            "interview",
+            "selected"
+        ]
+
+        if new_status not in allowed_status:
+            return Response({
+                "error": "Invalid status"
+            }, status=400)
+
+        application.status = new_status
+        application.save()
+
+        return Response({
+            "message": "Status updated manually",
+            "new_status": application.status
+        })
