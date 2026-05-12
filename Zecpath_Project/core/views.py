@@ -874,3 +874,38 @@ class AutoShortlistAPI(APIView):
             "shortlisted_candidates": shortlisted,
             "rejected_candidates": rejected
         })
+    
+
+
+
+
+
+
+class EligibilityCheckAPI(APIView):
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def get(self, request, application_id):
+
+        try:
+            application = Application.objects.get(
+                id=application_id,
+                job__employer=request.user.employer
+            )
+
+        except Application.DoesNotExist:
+            return Response({
+                "error": "Application not found"
+            }, status=404)
+
+        eligible = application.ats_score >= 60
+
+        return Response({
+            "candidate": application.candidate.user.email,
+            "ats_score": application.ats_score,
+            "eligible": eligible
+        })
+    
+
+
+
+
