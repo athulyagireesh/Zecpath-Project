@@ -738,29 +738,29 @@ class ResumeNLPAPI(APIView):
 
 
 
-class ATSMatchAPI(APIView):
-    permission_classes = [IsAuthenticated, IsEmployer]
+# class ATSMatchAPI(APIView):
+#     permission_classes = [IsAuthenticated, IsEmployer]
 
-    def get(self, request, job_id):
+#     def get(self, request, job_id):
 
-        try:
-            job = Job.objects.get(
-                id=job_id,
-                employer=request.user.employer
-            )
+#         try:
+#             job = Job.objects.get(
+#                 id=job_id,
+#                 employer=request.user.employer
+#             )
 
-        except Job.DoesNotExist:
-            return Response({
-                "error": "Job not found"
-            }, status=404)
+#         except Job.DoesNotExist:
+#             return Response({
+#                 "error": "Job not found"
+#             }, status=404)
 
-        applications = Application.objects.filter(job=job)
+#         applications = Application.objects.filter(job=job)
 
-        ranked_candidates = []
+#         ranked_candidates = []
 
-        for app in applications:
+#         for app in applications:
 
-            candidate = app.candidate
+#             candidate = app.candidate
 
             score = 0
 
