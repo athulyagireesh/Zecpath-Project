@@ -999,3 +999,23 @@ def send_notification_email(user, subject, message):
             message=str(e),
             status='failed'
         )
+
+
+
+
+
+
+class NotificationLogsAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        logs = NotificationLog.objects.all().values(
+            'id',
+            'user__email',
+            'subject',
+            'status',
+            'created_at'
+        )
+
+        return Response(logs)
