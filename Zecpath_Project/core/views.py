@@ -176,7 +176,6 @@ class JobListAPI(generics.ListAPIView):
 
 
 
-
 class ApplyJobAPI(APIView):
     permission_classes = [IsAuthenticated, IsCandidate]
 
@@ -205,7 +204,13 @@ class ApplyJobAPI(APIView):
             candidate=candidate,
             resume=resume
         )
-        
+
+        # ✅ EMAIL TRIGGER
+        send_notification_email(
+            request.user,
+            "Job Application Submitted",
+            f"You successfully applied for {job.title}"
+        )
 
         return Response({
             "message": "Applied successfully",
