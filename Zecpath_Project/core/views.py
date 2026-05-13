@@ -21,7 +21,9 @@ import pdfplumber
 from docx import Document
 from .serializers import ResumeUploadSerializer
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import NotificationLog
 
 
 
@@ -203,6 +205,7 @@ class ApplyJobAPI(APIView):
             candidate=candidate,
             resume=resume
         )
+        
 
         return Response({
             "message": "Applied successfully",
@@ -950,3 +953,36 @@ class ManualStatusOverrideAPI(APIView):
             "message": "Status updated manually",
             "new_status": application.status
         })
+    
+
+
+
+
+
+def send_notification_email(user, subject, message):
+
+    try:
+
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            fail_silently=False
+        )
+
+        NotificationLog.objects.create(
+            user=user,
+            subject=subject,
+            message=message,
+            status='sent'
+        )
+
+    except Exception as e:
+
+        NotificationLog.objects.create(
+            user=user,
+            subject=subject,
+            message=str(e),
+            status='failed'
+        )
