@@ -29,6 +29,7 @@ from core.views import ATSMatchAPI
 from core.views import AutoShortlistAPI
 from core.views import ManualStatusOverrideAPI
 from core.views import EligibilityCheckAPI
+from core.views import NotificationLogsAPI
 
 
 urlpatterns = [
@@ -64,5 +65,6 @@ urlpatterns = [
     path('api/auto-shortlist/<int:job_id>/',AutoShortlistAPI.as_view()),
     path('api/manual-status/<int:application_id>/',ManualStatusOverrideAPI.as_view()),
     path('api/eligibility/<int:application_id>/',EligibilityCheckAPI.as_view()),
+    path('api/notification-logs/',NotificationLogsAPI.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
