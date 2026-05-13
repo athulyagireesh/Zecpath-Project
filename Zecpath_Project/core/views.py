@@ -357,6 +357,14 @@ class UpdateApplicationStatusAPI(APIView):
         application.status = new_status
         application.save()
 
+        
+        # ✅ STATUS EMAIL
+        send_notification_email(
+        application.candidate.user,
+        "Application Status Updated",
+       f"Your application status changed to {application.status}"
+       )
+
         return Response({
             "message": "Status updated",
             "new_status": application.status
